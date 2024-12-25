@@ -11,6 +11,19 @@ import (
 	"github.com/joho/godotenv"
 )
 
+func respondWithError(w http.ResponseWriter, statusCode int, msg string) {
+	if statusCode > 499 {
+		log.Println("responding with 5XX error: ", msg)
+	}
+	type errResponse struct {
+		Error string `json:"error"`
+	}
+
+	respondWithJSON(w, statusCode, errResponse{
+		Error: msg,
+	})
+}
+
 // respondWithJSON sends a JSON response with the given status code and payload.
 func respondWithJSON(w http.ResponseWriter, statusCode int, payload interface{}) {
 	dat, err := json.Marshal(payload)
@@ -52,7 +65,8 @@ func main() {
 
 	// Create a v1 router and mount it to the /v1 path
 	v1Router := chi.NewRouter()
-	v1Router.Get("/healthz", HandlerReadiness) // Health check endpoint
+	v1Router.Get("/healthz", HandlerReadiness)
+	v1Router.Get("/err", HandleErr)
 	router.Mount("/v1", v1Router)
 
 	// Create the HTTP server and start it
