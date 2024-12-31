@@ -94,6 +94,7 @@ func main() {
 	v1Router.Get("/err", HandleErr)
 	v1Router.Post("/users", apiCfg.HandlerCreateUser)
 	v1Router.Get("/users", apiCfg.middlewareAuth(apiCfg.HandlerGetUser))
+	v1Router.Post("/feeds", apiCfg.middlewareAuth(apiCfg.HandlerCreateFeed))
 	router.Mount("/v1", v1Router)
 
 	// Create the HTTP server and start it

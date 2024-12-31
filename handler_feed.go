@@ -22,7 +22,7 @@ func (apiConfig *apiConfig) HandlerCreateFeed(w http.ResponseWriter, r *http.Req
 		respondWithError(w, 400, fmt.Sprintf("error parsing json: %v", err))
 		return
 	}
-	newUser, err := apiConfig.DB.CreateFeed(r.Context(), database.CreateFeedParams{
+	newFeed, err := apiConfig.DB.CreateFeed(r.Context(), database.CreateFeedParams{
 		ID:        uuid.New(),
 		CreatedAt: time.Now().UTC(),
 		UpdatedAt: time.Now().UTC(),
@@ -31,12 +31,17 @@ func (apiConfig *apiConfig) HandlerCreateFeed(w http.ResponseWriter, r *http.Req
 		UserID:    user.ID,
 	})
 	if err != nil {
-		respondWithError(w, 400, fmt.Sprintf("Couldnt create user: %v", err))
+		respondWithError(w, 400, fmt.Sprintf("Couldn't create Feed: %v", err))
 		return
 	}
-	respondWithJSON(w, 201, newUser)
+	respondWithJSON(w, 201, databaseFeedtoFeed(newFeed))
 }
 
-// func (apiCfg *apiConfig) HandlerGetFeed(w http.ResponseWriter, r *http.Request, user database.User) {
-// 	respondWithJSON(w, 200, databaseUsertoUser(user))
-// }
+func (apiCfg *apiConfig) HandlerGetFeeds(w http.ResponseWriter, r *http.Request) {
+
+	feeds, err := apiCfg.DB.GetFeeds(r.Context())
+	if err != nil {
+		respondWithError(w, 400, fmt.Sprintf("Couldn't get feed: %v", err))
+	}
+	respondWithJSON(w, 200, databaseFeedstoFeeds(feeds))
+}

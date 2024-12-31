@@ -10,5 +10,5 @@ INSERT INTO
     )
 values ($1, $2, $3, $4, $5, $6) RETURNING *;
 
--- name: GetFeeds :one
+-- name: GetFeeds :many
 SELECT * FROM feeds;
