@@ -45,6 +45,7 @@ type apiConfig struct {
 }
 
 func main() {
+
 	// Load environment variables from the .env file
 	err := godotenv.Load(".env")
 	if err != nil {
@@ -68,12 +69,12 @@ func main() {
 		log.Fatal("Can't connect to database ", err)
 	}
 
+	db := database.New(conn)
+
 	apiCfg := apiConfig{
-		DB: database.New(conn),
+		DB: db,
 	}
-	if err != nil {
-		log.Fatal("Can't connect to database")
-	}
+	go startScraping(db)
 
 	// Create a new router
 	router := chi.NewRouter()
@@ -113,6 +114,7 @@ func main() {
 
 	// Log and start the server
 	log.Printf("Server starting on port %v", port)
+
 	err = srv.ListenAndServe()
 	if err != nil {
 		log.Fatal("Server failed to start: ", err)
