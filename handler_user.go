@@ -31,9 +31,9 @@ func (apiConfig *apiConfig) HandlerCreateUser(w http.ResponseWriter, r *http.Req
 		respondWithError(w, 400, fmt.Sprintf("Couldnt create user: %v", err))
 		return
 	}
-	respondWithJSON(w, 201, databaseUsertoUser(newUser))
+	respondWithJSON(w, 201, dbUsertoUser(newUser))
 }
 
 func (apiCfg *apiConfig) HandlerGetUser(w http.ResponseWriter, r *http.Request, user database.User) {
-	respondWithJSON(w, 200, databaseUsertoUser(user))
+	respondWithJSON(w, 200, dbUsertoUser(user))
 }

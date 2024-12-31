@@ -92,9 +92,17 @@ func main() {
 	v1Router := chi.NewRouter()
 	v1Router.Get("/healthz", HandlerReadiness)
 	v1Router.Get("/err", HandleErr)
+	/////
 	v1Router.Post("/users", apiCfg.HandlerCreateUser)
 	v1Router.Get("/users", apiCfg.middlewareAuth(apiCfg.HandlerGetUser))
+	/////
 	v1Router.Post("/feeds", apiCfg.middlewareAuth(apiCfg.HandlerCreateFeed))
+	v1Router.Get("/feeds", apiCfg.HandlerGetFeeds)
+	/////
+	v1Router.Post("/feed_follows", apiCfg.middlewareAuth(apiCfg.HandlerCreateFeedFollow))
+	v1Router.Get("/feed_follows", apiCfg.middlewareAuth(apiCfg.HandlerGetFeedFollows))
+	v1Router.Delete("/feed_follows/{feedFollowID}", apiCfg.middlewareAuth(apiCfg.HandlerDeleteFeedFollows))
+	/////////////////
 	router.Mount("/v1", v1Router)
 
 	// Create the HTTP server and start it
