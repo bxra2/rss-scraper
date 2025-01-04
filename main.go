@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"time"
 
 	"github.com/bxra2/rss-scraper/internal/database"
 	"github.com/go-chi/chi/v5"
@@ -74,7 +75,7 @@ func main() {
 	apiCfg := apiConfig{
 		DB: db,
 	}
-	go startScraping(db)
+	go startScraping(db, 10, time.Minute)
 
 	// Create a new router
 	router := chi.NewRouter()
@@ -103,6 +104,9 @@ func main() {
 	v1Router.Post("/feed_follows", apiCfg.middlewareAuth(apiCfg.HandlerCreateFeedFollow))
 	v1Router.Get("/feed_follows", apiCfg.middlewareAuth(apiCfg.HandlerGetFeedFollows))
 	v1Router.Delete("/feed_follows/{feedFollowID}", apiCfg.middlewareAuth(apiCfg.HandlerDeleteFeedFollows))
+	/////
+	v1Router.Get("/posts", apiCfg.middlewareAuth(apiCfg.HandlerGetPostsForUser))
+
 	/////////////////
 	router.Mount("/v1", v1Router)
 
